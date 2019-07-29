@@ -1,0 +1,10 @@
+Package: AddInf
+Type: Package
+Title: The package functions implement statistical estimation with the use of additional information
+Version: 0.1.1
+Date: 2019-07-29
+Author: Sergey Tarima 
+Maintainer: Sergey Tarima  <sergeys.s.tarima@gmail.com>
+Imports: stats, Matrix
+Description: The package functions implement statistical estimation with the use of additional information. This additional information can come from multiple indepedent data sources. Each source is reported in form of a vector of means and a variance covariance matrix.
+License: GPL-3
