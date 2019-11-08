@@ -122,7 +122,7 @@ for(delta in ra) {
 }
 
 plot(ra,CIs$EST,ylim=c(-0.5,1),type="l",lwd=3,
-    ylab="Estimated difference and 95% CI",xlab="bias")
+    ylab="Estimated difference and 95\% CI",xlab="bias")
 lines(ra,CIs$LO)
 lines(ra,CIs$HI)
 lines(ra,rep(theta_lo,n),lty=2)
