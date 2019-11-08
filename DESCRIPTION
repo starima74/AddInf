@@ -1,7 +1,7 @@
 Package: AddInf
 Type: Package
 Title: The package functions implement statistical estimation with the use of additional information
-Version: 0.1.1
+Version: 0.1.2
 Date: 2019-07-29
 Author: Sergey Tarima 
 Maintainer: Sergey Tarima  <sergeys.s.tarima@gmail.com>
