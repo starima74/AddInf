@@ -42,26 +42,24 @@ Tarima S.S., Vexler A., Singh S., Robust mean estimation under a possibly incorr
 Sergey Tarima and Kadam Patel. The Association between Gestational Age and 3rd Grade Standardized Reading Score. MCW Biostatistics technical report #68. https://www.mcw.edu/-/media/MCW/Departments/Biostatistics
 }
 \author{
-Sergey Tarima (sergey.s.tarima@gmail.com) and Roman Vygon ()
+Sergey Tarima (sergey.s.tarima@gmail.com) and Roman Vygon (roman.vygon@gmail.com)
 }
 \examples{
 
 ### A variance covariance matrix of adjuated and unadjusted
 ### estimates of differences in reading scores between children 
-### born at the gestational age of 37 weeks and full term 
-### birth children (39-41 weeks)
+### born at the gestational age of 37 and 39:41 weeks
 
 K <- matrix(c(0.0467408718, 0.0499675797, 0.0499675797, 0.0768166235),2,2)
 
 ### an estimate of the parameter of interest (the adjusted 
 ### estimate of differences (in percents) in reading scores
-### between children born at the gestational age of 37 weeks 
-### and full term children
+### between children born at the gestational age of 37 and 39:41 weeks
 thetahat <- 0.173
 
 ### an estimate of the auxiliary parameter (the unadjusted 
 ### estimate of differences in reading scores between children 
-### born at the gestational age of 37 weeks and full term children
+### born at the gestational age of 37 and 39:41 weeks
 betahat <- -0.952
 
 ### (Empty) Additional Information (on the auxiliary parameter)
