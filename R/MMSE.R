@@ -24,15 +24,15 @@ function(dd, theta.f, Add.Inf,
   K = var(bootres)/nrow(dd)
   ind1 <- 1:thetahat.length
   ind2 <- (thetahat.length+1):(betahat.length+thetahat.length)
-  K11 <- K[ind1,ind1]
-  K12 <- K[ind1,ind2]
-  K21 <- K[ind2,ind1]
+  K11 <- K[ind1,ind1] * n
+  K12 <- K[ind1,ind2] * n
+  K21 <- K[ind2,ind1] * n
   if(is.null(dim(bootres[,ind2])))  Biases2 <- (mean(bootres[,ind2]) - unlist(Add.Inf$Means))^2
   if(!is.null(dim(bootres[,ind2]))) Biases2 <- (colMeans(bootres[,ind2]) - unlist(Add.Inf$Means))^2
   Biases2 <- Biases2 %o% Biases2
   Biases2[Add.Inf$Biases == 0, ] <- 0
   Biases2[, Add.Inf$Biases == 0] <- 0
-  K22 <- K[ind2,ind2] +   Biases2
+  K22 <- K[ind2,ind2] * n + Biases2
   K.add <- as.matrix(Matrix::bdiag(Add.Inf$Vars))
   betatilde <- unlist(Add.Inf$Means)
   SVD_var <- svd(K22 + K.add)
@@ -47,7 +47,7 @@ function(dd, theta.f, Add.Inf,
     Kinv <- SVD_var$v %*% diag_elem %*% t(SVD_var$u)
   if(length(SVD_var$d>0 & ind.svd == 1) > 1)  
     Kinv <- SVD_var$v %*% diag(diag_elem) %*% t(SVD_var$u)
-  thetahat.MVAR = thetahat - K12 %*% Kinv %*% (betahat - betatilde)
+  thetahat.MVAR = thetahat + K12 %*% Kinv %*% (betahat - betatilde)
   thetahat.MVAR.Var = K11 - K12 %*% Kinv %*% K21
   list(Theta.Est = thetahat.MVAR, 
        Theta.Est.Var = thetahat.MVAR.Var,
