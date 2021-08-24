@@ -1,7 +1,8 @@
 MMSE <-
 function(dd, theta.f, Add.Inf,
                 nboots = 500, 
-                eig.cutoff = 0.9, ...) {
+                eig.cutoff = 0.9, nsims = 1000, ...) {
+  library(MASS)
   p <- nrow(Add.Inf)
   n <- nrow(dd)
   thetahat <- theta.f(dd, ...)
@@ -29,7 +30,7 @@ function(dd, theta.f, Add.Inf,
   K21 <- K[ind2,ind1]
   if(is.null(dim(bootres[,ind2])))  Biases2 <- (mean(bootres[,ind2]) - unlist(Add.Inf$Means))^2
   if(!is.null(dim(bootres[,ind2]))) Biases2 <- (colMeans(bootres[,ind2]) - unlist(Add.Inf$Means))^2
-  Biases2 <- Biases2 %o% Biases2
+  Biases2 <- n*Biases2 %o% Biases2
   Biases2[Add.Inf$Biases == 0, ] <- 0
   Biases2[, Add.Inf$Biases == 0] <- 0
   K22 <- K[ind2,ind2] + Biases2
@@ -49,7 +50,31 @@ function(dd, theta.f, Add.Inf,
     Kinv <- SVD_var$v %*% diag(diag_elem) %*% t(SVD_var$u)
   thetahat.MVAR = thetahat - K12 %*% Kinv %*% (betahat - betatilde)
   thetahat.MVAR.Var = K11 - K12 %*% Kinv %*% K21
+  thetahat.sims <- mvrnorm(nsims, mu = c(thetahat, betahat), Sigma = K)
+  betatilde.sims <- mvrnorm(nsims, mu = betatilde, Sigma = K.add)
+  thetaest.sims <- matrix(NA,nrow = nsims, ncol = length(thetahat.sims))
+  for(s in 1:nsims) {
+    Biases2 <- (thetahat.sims[s,ind2] - betatilde.sims[s,])^2
+    Biases2 <- n * Biases2 %o% Biases2
+    Biases2[Add.Inf$Biases == 0, ] <- 0
+    Biases2[, Add.Inf$Biases == 0] <- 0
+    SVD_var <- svd(K[ind2,ind2] + Biases2 + K.add)
+    ind.svd <- rep(1,length(SVD_var$d))
+    if(length(SVD_var$d)>1)
+      for(i in 2:length(SVD_var$d))
+        ind.svd[i] <- sum(SVD_var$d[1:(i-1)])/sum(SVD_var$d) < eig.cutoff
+    diag_elem <- rep(0,length(SVD_var$d))
+    diag_elem[SVD_var$d>0 & ind.svd == 1] <- 
+      1/SVD_var$d[SVD_var$d>0 & ind.svd == 1]
+    if(length(SVD_var$d>0 & ind.svd == 1) == 1)  
+      Kinv <- SVD_var$v %*% diag_elem %*% t(SVD_var$u)
+    if(length(SVD_var$d>0 & ind.svd == 1) > 1)  
+      Kinv <- SVD_var$v %*% diag(diag_elem) %*% t(SVD_var$u)
+    thetaest.sims[s,] = thetahat.sims[s,ind1] - K12 %*% Kinv %*% (thetahat.sims[s,ind2] - betatilde.sims[s,]) 
+  }
   list(Theta.Est = thetahat.MVAR, 
-       Theta.Est.Var = thetahat.MVAR.Var,
-       Theta.Hat = thetahat, Theta.Hat.Var = K11)
+       #Theta.Est.Var = thetahat.MVAR.Var,
+       Theta.Hat = thetahat, 
+       Theta.Hat.Var = K11,
+       Theta.Est.sims = thetaest.sims)
 }
