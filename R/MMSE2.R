@@ -34,5 +34,3 @@ MMSE2 <-
          Theta.Est.MSE = thetahat.MMSE.MSE,
          Theta.Hat = thetahat, Theta.Hat.Var = thetahat.cov)
 }
-
-
